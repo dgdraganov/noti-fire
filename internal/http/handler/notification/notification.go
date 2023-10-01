@@ -3,7 +3,7 @@ package notification
 import "net/http"
 
 type notificationHandler struct {
-	operation Operation
+	operation Action
 }
 
 func (n *notificationHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -11,7 +11,7 @@ func (n *notificationHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) 
 }
 
 // NewNotificationHandler is a constructor function for the notificationHandler type
-func NewNotificationHandler(operation Operation) *notificationHandler {
+func NewNotificationHandler(operation Action) *notificationHandler {
 	return &notificationHandler{
 		operation: operation,
 	}
