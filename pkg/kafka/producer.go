@@ -31,7 +31,7 @@ func NewKafkaProducer(config config.KafkaProducerConfig) *kafkaProducer {
 	}
 }
 
-func (pr *kafkaProducer) Publish(ctx context.Context, topic string, message string) error {
+func (pr *kafkaProducer) Publish(ctx context.Context, topic string, msgs ...string) error {
 
 	// not implemented
 	return nil

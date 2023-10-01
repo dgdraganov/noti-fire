@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/dgdraganov/noti-fire/internal/http/handler/notification"
+	"github.com/dgdraganov/noti-fire/internal/http/middleware"
 	"github.com/dgdraganov/noti-fire/internal/http/router"
 	"github.com/dgdraganov/noti-fire/internal/http/server"
 	"github.com/dgdraganov/noti-fire/internal/notifyer"
@@ -24,12 +25,18 @@ func main() {
 
 	kafkaProducer := kafka.NewKafkaProducer(conf.KafkaProducerConfig)
 	notifyer := notifyer.NewNotifyerAction(kafkaProducer)
-	notifyHdlr := notification.NewNotificationHandler(notifyer)
+
+	// middleware initialization
+	i := middleware.NewRequestIdMiddleware(logger)
+	a := middleware.NewAuthenticatorMiddleware(logger)
+	l := middleware.NewLoggerMiddleware(logger)
+
+	notificationHandler := i.Id(l.Log(a.Auth(notification.NewNotificationHandler("POST", notifyer, logger))))
 
 	serviceRouter := router.NewNotificationRouter()
-	serviceRouter.Register("/notify", notifyHdlr)
 
-	serveMux := serviceRouter.ServeMux()
+	// POST method
+	serviceRouter.Register("/notify", notificationHandler)
 
 	logger.Infow(
 		"server starting...",
@@ -38,7 +45,7 @@ func main() {
 
 	// todo: add graceful shut down
 
-	server := server.NewHTTPServer(serveMux, logger)
+	server := server.NewHTTPServer(serviceRouter.ServeMux(), logger)
 	if err = server.Start(conf.ServerPort); err != nil {
 		logger.Fatalf("server stopped unexpectedly: %s", err)
 	}
