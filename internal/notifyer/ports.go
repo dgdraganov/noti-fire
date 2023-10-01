@@ -1,7 +1,11 @@
 package notifyer
 
-import "context"
+import (
+	"context"
+
+	"github.com/dgdraganov/noti-fire/internal/model"
+)
 
 type Publisher interface {
-	Publish(ctx context.Context, topic string, msgs ...string) error
+	Publish(ctx context.Context, msg model.EventMessage) error
 }

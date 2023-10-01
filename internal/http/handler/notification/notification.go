@@ -41,8 +41,8 @@ func (n *notificationHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) 
 	}
 
 	// decode json request body
-	notificReq := model.NotificationRequest{}
-	err := common.JSONDecode(r.Body, notificReq)
+	notification := model.NotificationRequest{}
+	err := common.JSONDecode(r.Body, notification)
 	if err != nil {
 		n.logs.Errorw(
 			"request decode",
@@ -58,7 +58,7 @@ func (n *notificationHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) 
 	}
 
 	// perform handler action
-	err = n.action.Execute(r.Context(), notificReq.Message)
+	err = n.action.Execute(r.Context(), notification.Message)
 	if err != nil {
 		n.logs.Errorw(
 			"execute action",

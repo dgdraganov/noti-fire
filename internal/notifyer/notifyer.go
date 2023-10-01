@@ -1,6 +1,11 @@
 package notifyer
 
-import "context"
+import (
+	"context"
+	"fmt"
+
+	"github.com/dgdraganov/noti-fire/internal/model"
+)
 
 type notifyerAction struct {
 	publisher Publisher
@@ -15,6 +20,12 @@ func NewNotifyerAction(publisher Publisher) *notifyerAction {
 
 // Execute is the function that implements the responsibility of the notifyerAction
 func (n *notifyerAction) Execute(ctx context.Context, message string) error {
-	// not implemented
+	eventMessage := model.EventMessage{
+		Message: message,
+	}
+	err := n.publisher.Publish(ctx, eventMessage)
+	if err != nil {
+		return fmt.Errorf("publish event: %w", err)
+	}
 	return nil
 }

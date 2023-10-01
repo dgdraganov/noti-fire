@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"net/http"
 
 	"github.com/dgdraganov/noti-fire/internal/http/handler/notification"
 	"github.com/dgdraganov/noti-fire/internal/http/middleware"
@@ -11,6 +12,7 @@ import (
 	"github.com/dgdraganov/noti-fire/pkg/config"
 	"github.com/dgdraganov/noti-fire/pkg/kafka"
 	"github.com/dgdraganov/noti-fire/pkg/log"
+	"github.com/dgdraganov/noti-fire/pkg/producer"
 	"go.uber.org/zap/zapcore"
 )
 
@@ -23,19 +25,22 @@ func main() {
 
 	logger := log.NewZapLogger(conf.ServiceName, zapcore.InfoLevel)
 
-	kafkaProducer := kafka.NewKafkaProducer(conf.KafkaProducerConfig)
-	notifyer := notifyer.NewNotifyerAction(kafkaProducer)
-
 	// middleware initialization
 	i := middleware.NewRequestIdMiddleware(logger)
 	a := middleware.NewAuthenticatorMiddleware(logger)
 	l := middleware.NewLoggerMiddleware(logger)
 
-	notificationHandler := i.Id(l.Log(a.Auth(notification.NewNotificationHandler("POST", notifyer, logger))))
+	kafkaWriter := kafka.NewKafkaWriter(conf.KafkaProducerConfig)
+	kafkaProducer := producer.NewMessageProducer(kafkaWriter)
+	notifyer := notifyer.NewNotifyerAction(kafkaProducer)
+
+	var notificationHandler http.Handler
+	notificationHandler = notification.NewNotificationHandler("POST", notifyer, logger)
+	notificationHandler = i.Id(l.Log(a.Auth(notificationHandler)))
 
 	serviceRouter := router.NewNotificationRouter()
 
-	// POST method
+	// POST
 	serviceRouter.Register("/notify", notificationHandler)
 
 	logger.Infow(
