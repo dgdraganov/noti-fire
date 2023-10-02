@@ -35,14 +35,14 @@ func (d *notificationDispatcher) Dispatch(msg model.NotificationMessage) {
 	for name, driver := range d.drivers {
 		err := driver.Send(msg)
 		if err != nil {
-			d.logs.Errorf(
+			d.logs.Errorw(
 				"dispatching message failed",
 				"driver", name,
 				"error", err,
 			)
 			continue
 		}
-		d.logs.Infof(
+		d.logs.Infow(
 			"successfully dispatched message",
 			"driver", name,
 		)

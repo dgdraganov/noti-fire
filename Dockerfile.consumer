@@ -1,0 +1,20 @@
+
+FROM golang:1.21 AS build 
+
+WORKDIR /consumer
+
+COPY . .
+
+RUN go mod download
+RUN go build -o /consumer/app cmd/consumer/main.go
+
+
+FROM ubuntu:22.04
+
+WORKDIR /consumer
+
+# todo: add certificates
+COPY --from=build /consumer/app /consumer/app
+
+EXPOSE 9205
+CMD ["/consumer/app"]
