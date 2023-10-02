@@ -1,12 +1,9 @@
 package config
 
 import (
-	"errors"
 	"fmt"
 	"os"
 )
-
-var errMissingEnvVariable error = errors.New("environment variable not found")
 
 type KafkaProducerConfig struct {
 	Brokers string // comma-separated broker addresses
@@ -14,9 +11,9 @@ type KafkaProducerConfig struct {
 }
 
 type ServerConfig struct {
-	AppEnv      string
-	ServerPort  string
-	ServiceName string
+	AppEnv     string
+	ServerPort string
+	ServerName string
 	KafkaProducerConfig
 }
 
@@ -32,9 +29,9 @@ func NewServerConfig() (ServerConfig, error) {
 		return ServerConfig{}, fmt.Errorf("%w: SERVER_PORT", errMissingEnvVariable)
 	}
 
-	serviceName, ok := os.LookupEnv("SERVICE_NAME")
+	serverName, ok := os.LookupEnv("SERVER_NAME")
 	if !ok {
-		return ServerConfig{}, fmt.Errorf("%w: SERVICE_NAME", errMissingEnvVariable)
+		return ServerConfig{}, fmt.Errorf("%w: SERVER_NAME", errMissingEnvVariable)
 	}
 
 	brokers, ok := os.LookupEnv("KAFKA_BROKERS")
@@ -47,7 +44,7 @@ func NewServerConfig() (ServerConfig, error) {
 		return ServerConfig{}, fmt.Errorf("%w: KAFKA_TOPIC", errMissingEnvVariable)
 	}
 
-	kafka := KafkaProducerConfig{
+	kafkaConfig := KafkaProducerConfig{
 		Brokers: brokers,
 		Topic:   topic,
 	}
@@ -55,7 +52,7 @@ func NewServerConfig() (ServerConfig, error) {
 	return ServerConfig{
 		AppEnv:              appEnv,
 		ServerPort:          serverPort,
-		ServiceName:         serviceName,
-		KafkaProducerConfig: kafka,
+		ServerName:          serverName,
+		KafkaProducerConfig: kafkaConfig,
 	}, nil
 }

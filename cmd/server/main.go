@@ -23,7 +23,7 @@ func main() {
 		panic(fmt.Sprintf("new config: %s", err))
 	}
 
-	logger := log.NewZapLogger(conf.ServiceName, zapcore.InfoLevel)
+	logger := log.NewZapLogger(conf.ServerName, zapcore.InfoLevel)
 
 	// middleware initialization
 	i := middleware.NewRequestIdMiddleware(logger)
