@@ -20,6 +20,7 @@ func NewNotificationHandler(method string, action Action, logger *zap.SugaredLog
 	return &notificationHandler{
 		action: action,
 		logs:   logger,
+		method: method,
 	}
 }
 func (n *notificationHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -34,7 +35,7 @@ func (n *notificationHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) 
 		)
 		common.WriteResponse(
 			w,
-			fmt.Sprintf("invalid request method %q, expected method is %q", r.Method, n.method),
+			fmt.Sprintf("invalid request method %s, expected method is %s", r.Method, n.method),
 			http.StatusBadRequest,
 		)
 		return
@@ -42,7 +43,7 @@ func (n *notificationHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) 
 
 	// decode json request body
 	notification := model.NotificationRequest{}
-	err := common.JSONDecode(r.Body, notification)
+	err := common.JSONDecode(r.Body, &notification)
 	if err != nil {
 		n.logs.Errorw(
 			"request decode",
