@@ -15,6 +15,8 @@ type kafkaWriter struct {
 
 // NewKafkaWriter is sa constructor function for the kafkaWriter type
 func NewKafkaWriter(config config.KafkaProducerConfig) *kafkaWriter {
+
+	// todo: add tls config
 	// dialer := &kafka.Dialer{
 	//     Timeout:   10 * time.Second,
 	//     DualStack: true,
@@ -33,6 +35,7 @@ func NewKafkaWriter(config config.KafkaProducerConfig) *kafkaWriter {
 	}
 }
 
+// WriteMessage is publishing a message to a specific kafka topic
 func (pr *kafkaWriter) WriteMessage(ctx context.Context, msg []byte) error {
 	kafkaMessage := kafka.Message{Value: msg}
 	if err := pr.writer.WriteMessages(ctx, kafkaMessage); err != nil {

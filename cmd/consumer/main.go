@@ -16,5 +16,6 @@ func main() {
 	}
 
 	logger := log.NewZapLogger(conf.ConsumerName, zapcore.InfoLevel)
+	logger.Info("starting")
 
 }
