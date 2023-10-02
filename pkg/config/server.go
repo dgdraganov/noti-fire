@@ -17,7 +17,7 @@ type ServerConfig struct {
 	KafkaProducerConfig
 }
 
-// NewServerConfig i sa constructor function for the ServerConfig type
+// NewServerConfig is a constructor function for the ServerConfig type
 func NewServerConfig() (ServerConfig, error) {
 	appEnv, ok := os.LookupEnv("APP_ENV")
 	if !ok {

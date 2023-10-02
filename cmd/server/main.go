@@ -8,7 +8,7 @@ import (
 	"github.com/dgdraganov/noti-fire/internal/http/middleware"
 	"github.com/dgdraganov/noti-fire/internal/http/router"
 	"github.com/dgdraganov/noti-fire/internal/http/server"
-	"github.com/dgdraganov/noti-fire/internal/processor"
+	"github.com/dgdraganov/noti-fire/internal/process"
 	"github.com/dgdraganov/noti-fire/pkg/config"
 	"github.com/dgdraganov/noti-fire/pkg/kafka"
 	"github.com/dgdraganov/noti-fire/pkg/log"
@@ -32,7 +32,7 @@ func main() {
 
 	kafkaWriter := kafka.NewKafkaWriter(conf.KafkaProducerConfig)
 	kafkaProducer := producer.NewMessageProducer(kafkaWriter)
-	processor := processor.NewProcessAction(kafkaProducer)
+	processor := process.NewProcessAction(kafkaProducer)
 
 	var processHandler http.Handler
 	processHandler = notification.NewNotificationHandler("POST", processor, logger)

@@ -16,7 +16,7 @@ type ConsumerConfig struct {
 	KafkaConsumerConfig
 }
 
-// NewConsumerConfig i sa constructor function for the ConsumerConfig type
+// NewConsumerConfig is a constructor function for the ConsumerConfig type
 func NewConsumerConfig() (ConsumerConfig, error) {
 	appEnv, ok := os.LookupEnv("APP_ENV")
 	if !ok {

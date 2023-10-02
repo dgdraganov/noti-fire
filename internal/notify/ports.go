@@ -1,4 +1,4 @@
-package notifyer
+package notify
 
 import (
 	"context"
@@ -9,4 +9,8 @@ import (
 type Consumer interface {
 	Consume(ctx context.Context) (*model.ConsumedMessage, error)
 	MarkConsumed(ctx context.Context, msg *model.ConsumedMessage) error
+}
+
+type Dispatcher interface {
+	Dispatch(model.NotificationMessage)
 }

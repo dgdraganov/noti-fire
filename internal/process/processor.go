@@ -1,4 +1,4 @@
-package processor
+package process
 
 import (
 	"context"
@@ -11,7 +11,7 @@ type processAction struct {
 	publisher Publisher
 }
 
-// NewProcessAction i sa constructor function for the processAction type
+// NewProcessAction is a constructor function for the processAction type
 func NewProcessAction(publisher Publisher) *processAction {
 	return &processAction{
 		publisher: publisher,
