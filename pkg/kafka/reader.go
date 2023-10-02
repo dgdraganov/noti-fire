@@ -38,7 +38,7 @@ func (p *kafkaReader) ReadMessage(ctx context.Context) (*model.ConsumedMessage, 
 		return nil, fmt.Errorf("reader fetch message: %w", err)
 	}
 
-	return &model.ConsumedMessage{msg}, nil
+	return &model.ConsumedMessage{Message: msg}, nil
 }
 
 // CommitMessage commits the given message by updating the offset value of the respective partition
