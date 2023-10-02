@@ -6,6 +6,7 @@ import (
 	"github.com/dgdraganov/noti-fire/internal/model"
 )
 
-type Publisher interface {
-	Publish(ctx context.Context, msg model.EventMessage) error
+type Consumer interface {
+	Consume(ctx context.Context) (*model.ConsumedMessage, error)
+	MarkConsumed(ctx context.Context, msg *model.ConsumedMessage) error
 }

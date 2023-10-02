@@ -18,6 +18,7 @@ func NewMessageConsumer(reader ReadCommitter) *messageConsumer {
 	}
 }
 
+// Consume uses the reader in order to consume a pending message
 func (c *messageConsumer) Consume(ctx context.Context) (*model.ConsumedMessage, error) {
 	msg, err := c.reader.ReadMessage(ctx)
 	if err != nil {
@@ -26,6 +27,7 @@ func (c *messageConsumer) Consume(ctx context.Context) (*model.ConsumedMessage, 
 	return msg, nil
 }
 
+// MarkConsumed makes sure that the message is accepted and will not be consumed again
 func (c *messageConsumer) MarkConsumed(ctx context.Context, msg *model.ConsumedMessage) error {
 	err := c.reader.CommitMessage(ctx, msg)
 	if err != nil {

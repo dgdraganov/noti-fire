@@ -19,3 +19,20 @@ func main() {
 	logger.Info("starting")
 
 }
+
+// reader := kafka.NewKafkaReader(config.KafkaConsumerConfig{
+// 	Brokers: "localhost:9092",
+// 	Topic:   "notifications",
+// })
+
+// for {
+// 	consumed, err := reader.ReadMessage(context.Background())
+// 	if err != nil {
+// 		panic(err)
+// 	}
+// 	fmt.Println(string(consumed.Message.Value))
+// 	err = reader.CommitMessage(context.Background(), consumed)
+// 	if err != nil {
+// 		panic(err)
+// 	}
+// }

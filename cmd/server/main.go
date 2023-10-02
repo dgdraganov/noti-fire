@@ -8,7 +8,7 @@ import (
 	"github.com/dgdraganov/noti-fire/internal/http/middleware"
 	"github.com/dgdraganov/noti-fire/internal/http/router"
 	"github.com/dgdraganov/noti-fire/internal/http/server"
-	"github.com/dgdraganov/noti-fire/internal/notifyer"
+	"github.com/dgdraganov/noti-fire/internal/processor"
 	"github.com/dgdraganov/noti-fire/pkg/config"
 	"github.com/dgdraganov/noti-fire/pkg/kafka"
 	"github.com/dgdraganov/noti-fire/pkg/log"
@@ -32,16 +32,16 @@ func main() {
 
 	kafkaWriter := kafka.NewKafkaWriter(conf.KafkaProducerConfig)
 	kafkaProducer := producer.NewMessageProducer(kafkaWriter)
-	notifyer := notifyer.NewNotifyerAction(kafkaProducer)
+	processor := processor.NewProcessAction(kafkaProducer)
 
-	var notificationHandler http.Handler
-	notificationHandler = notification.NewNotificationHandler("POST", notifyer, logger)
-	notificationHandler = i.Id(l.Log(a.Auth(notificationHandler)))
+	var processHandler http.Handler
+	processHandler = notification.NewNotificationHandler("POST", processor, logger)
+	processHandler = i.Id(l.Log(a.Auth(processHandler)))
 
 	serviceRouter := router.NewNotificationRouter()
 
 	// POST
-	serviceRouter.Register("/notify", notificationHandler)
+	serviceRouter.Register("/notify", processHandler)
 
 	logger.Infow(
 		"server starting...",
