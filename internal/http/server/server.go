@@ -1,6 +1,7 @@
 package server
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 
@@ -8,18 +9,42 @@ import (
 )
 
 type httpServer struct {
-	mux *http.ServeMux
+	logs   *zap.SugaredLogger
+	server *http.Server
 }
 
 // NewHTTPServer is a constructor function for the httpServer type
-func NewHTTPServer(serveMux *http.ServeMux, logger *zap.SugaredLogger) *httpServer {
+func NewHTTPServer(port string, serveMux *http.ServeMux, logger *zap.SugaredLogger) *httpServer {
+	server := &http.Server{
+		Addr:    fmt.Sprintf(":%s", port),
+		Handler: serveMux,
+	}
+
 	return &httpServer{
-		mux: serveMux,
+		logs:   logger,
+		server: server,
 	}
 }
 
-// StartServer runs an http server on the specified port
-func (s *httpServer) Start(port string) error {
-	p := fmt.Sprintf(":%s", port)
-	return http.ListenAndServe(p, s.mux)
+// Start runs an http server on the specified port
+func (s *httpServer) Start(port string) {
+	go func() {
+		if err := s.server.ListenAndServe(); err != nil {
+			s.logs.Errorw(
+				"server failed unexpectedly",
+				"error", err,
+			)
+		}
+	}()
+}
+
+// Shutdown stops the server gracefully
+func (s *httpServer) Shutdown() {
+
+	if err := s.server.Shutdown(context.Background()); err != nil {
+		s.logs.Errorw(
+			"server failed unexpectedly",
+			"error", err,
+		)
+	}
 }

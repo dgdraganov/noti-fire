@@ -3,6 +3,9 @@ package main
 import (
 	"context"
 	"fmt"
+	"os"
+	"os/signal"
+	"syscall"
 
 	"github.com/dgdraganov/noti-fire/drivers/email"
 	"github.com/dgdraganov/noti-fire/drivers/slack"
@@ -37,7 +40,12 @@ func main() {
 
 	ctx, cancel := context.WithCancel(context.Background())
 
-	// add graceful shutdown
-	defer cancel()
 	notifyer.Process(ctx)
+
+	sig := make(chan os.Signal, 1)
+	signal.Notify(sig, syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT)
+	<-sig
+
+	logger.Info("shut down signal received")
+	cancel()
 }

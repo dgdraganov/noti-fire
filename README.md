@@ -1,2 +1,38 @@
 # noti-fire
-Pluggable notification service with a very original name.
+
+A simple notification system that exposes a single endpoint `/notify` in order to receive messages that will be dispatched to different channels. The system consists of two services - `server` and `consumer` that communicate through `kafka` messages.
+
+## How to run?
+
+The project is equipped with `docker-compose.yaml` file together with all the needed configurations in `dev.env` in order to be started within a docker environmen:
+
+The following command will start the required services - `server`, `consumer` and `kafka` with a single broker:
+
+```
+    make compose
+```
+
+The `server` will be expecting requests on `localhost:9205`
+
+When finished one can use the below command in order to stop the running containers: 
+
+```
+    make decompose
+```
+
+## How to use? 
+
+The `/notify` endpoint expects messages in the following format:
+
+```
+{ "message": "this is an important message" }
+```
+
+## What about tests?
+
+Tests can be run with the following command:
+
+```
+    make tests
+```
+

@@ -3,6 +3,9 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"os"
+	"os/signal"
+	"syscall"
 
 	"github.com/dgdraganov/noti-fire/internal/http/handler/notification"
 	"github.com/dgdraganov/noti-fire/internal/http/middleware"
@@ -48,10 +51,14 @@ func main() {
 		"service_port", conf.ServerPort,
 	)
 
-	// todo: add graceful shut down
+	server := server.NewHTTPServer(conf.ServerPort, serviceRouter.ServeMux(), logger)
+	// starts the server asynchronously
+	server.Start(conf.ServerPort)
 
-	server := server.NewHTTPServer(serviceRouter.ServeMux(), logger)
-	if err = server.Start(conf.ServerPort); err != nil {
-		logger.Fatalf("server stopped unexpectedly: %s", err)
-	}
+	sig := make(chan os.Signal, 1)
+	signal.Notify(sig, syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT)
+	<-sig
+
+	logger.Info("shut down signal received")
+	server.Shutdown()
 }

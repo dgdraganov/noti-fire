@@ -22,8 +22,12 @@ func NewNotifyer(consumer Consumer, dispatcher Dispatcher, logger *zap.SugaredLo
 	}
 }
 
-// Process will listen for new messages from the consumer and will dispatch them through the dispatcher
+// Process will listen asynchronously for new messages from the consumer and will dispatch them through the dispatcher
 func (n *notifyer) Process(ctx context.Context) {
+	go n.process(ctx)
+}
+
+func (n *notifyer) process(ctx context.Context) {
 	for {
 		select {
 		case <-ctx.Done():
@@ -52,5 +56,4 @@ func (n *notifyer) Process(ctx context.Context) {
 			)
 		}
 	}
-
 }
