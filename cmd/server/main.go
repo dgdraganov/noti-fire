@@ -38,7 +38,7 @@ func main() {
 	processor := process.NewProcessAction(kafkaProducer)
 
 	var processHandler http.Handler
-	processHandler = notification.NewNotificationHandler("POST", processor, logger)
+	processHandler = notification.NewNotificationHandler(http.MethodPost, processor, logger)
 	processHandler = i.Id(l.Log(a.Auth(processHandler)))
 
 	serviceRouter := router.NewNotificationRouter()

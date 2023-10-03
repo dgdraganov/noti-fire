@@ -4,9 +4,9 @@ A simple notification system that exposes a single endpoint `/notify` in order t
 
 ## How to run?
 
-The project is equipped with `docker-compose.yaml` file together with all the needed configurations in `dev.env` in order to be started within a docker environmen:
+The project is equipped with `docker-compose.yaml` file together with all the needed configurations in `dev.env` in order to be started within a docker environmen.
 
-The following command will start the required services - `server`, `consumer` and `kafka` with a single broker:
+The following command will run the required services - `server`, `consumer` and `kafka` with a single broker:
 
 ```
     make compose

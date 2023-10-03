@@ -6,6 +6,7 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 
 	"github.com/dgdraganov/noti-fire/drivers/email"
 	"github.com/dgdraganov/noti-fire/drivers/slack"
@@ -48,4 +49,5 @@ func main() {
 
 	logger.Info("shut down signal received")
 	cancel()
+	<-time.After(time.Second * 10)
 }

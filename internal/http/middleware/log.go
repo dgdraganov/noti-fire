@@ -29,7 +29,6 @@ func (logger *loggerMiddleware) Log(handler http.Handler) http.Handler {
 		)
 		handler.ServeHTTP(w, r)
 
-		// todo: add response code log field
 		logger.logs.Infow(
 			"server response",
 			"response_id", requestID,

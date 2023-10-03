@@ -15,7 +15,6 @@ type notificationHandler struct {
 	logs   *zap.SugaredLogger
 }
 
-// NewNotificationHandler is a constructor function for the notificationHandler type
 func NewNotificationHandler(method string, action Action, logger *zap.SugaredLogger) *notificationHandler {
 	return &notificationHandler{
 		action: action,
@@ -23,6 +22,8 @@ func NewNotificationHandler(method string, action Action, logger *zap.SugaredLog
 		method: method,
 	}
 }
+
+// ServeHTTP implements the http.Handler interface for the notificationHandler type
 func (n *notificationHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	requestID := r.Context().Value(model.RequestID).(string)
 	// validate request method
@@ -40,20 +41,14 @@ func (n *notificationHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) 
 		)
 		return
 	}
-
 	// decode json request body
 	notification := model.NotificationRequest{}
 	err := common.JSONDecode(r.Body, &notification)
 	if err != nil {
-		n.logs.Errorw(
-			"request decode",
-			"request_id", requestID,
-			"error", err.Error(),
-		)
 		common.WriteResponse(
 			w,
-			"Something went wrong on our end!",
-			http.StatusInternalServerError,
+			"invalid JSON request body",
+			http.StatusBadRequest,
 		)
 		return
 	}
