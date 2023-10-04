@@ -70,12 +70,40 @@ func Test_MessageConsumer_Consume_Failed(t *testing.T) {
 	}
 }
 
-// func Test_MessageConsumer_Commit_Success(t *testing.T) {
+func Test_MessageConsumer_Commit_Success(t *testing.T) {
 
-// 	reader := &readCommitterMock{
-// 		commitMessage: func(ctx context.Context, msg *model.ConsumedMessage) error {
-// 			return nil
-// 		},
-// 	}
+	reader := &readCommitterMock{
+		commitMessage: func(ctx context.Context, msg *model.ConsumedMessage) error {
+			return nil
+		},
+	}
 
-// }
+	consumer := consume.NewMessageConsumer(reader)
+
+	consumedMessage := &model.ConsumedMessage{}
+	errGot := consumer.MarkConsumed(context.Background(), consumedMessage)
+
+	errExpected := error(nil)
+	if errGot != errExpected {
+		t.Fatalf("error does not match, expected: %v, got: %v", errExpected, errGot)
+	}
+}
+
+func Test_MessageConsumer_Commit_Failed(t *testing.T) {
+
+	errTest := errors.New("test error")
+	reader := &readCommitterMock{
+		commitMessage: func(ctx context.Context, msg *model.ConsumedMessage) error {
+			return errTest
+		},
+	}
+
+	consumer := consume.NewMessageConsumer(reader)
+
+	consumedMessage := &model.ConsumedMessage{}
+	errGot := consumer.MarkConsumed(context.Background(), consumedMessage)
+
+	if !errors.Is(errGot, errTest) {
+		t.Fatalf("error does not match, expected error '%v', to be '%v'", errGot, errTest)
+	}
+}

@@ -17,6 +17,7 @@ func NewLoggerMiddleware(logger *zap.SugaredLogger) *loggerMiddleware {
 	}
 }
 
+// Log implements the middleware logic to log incoming request and outgoing responses
 func (logger *loggerMiddleware) Log(handler http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		requestID := r.Context().Value(model.RequestID).(string)

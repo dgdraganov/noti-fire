@@ -14,10 +14,12 @@ func NewNotificationRouter() *notificationRouter {
 	}
 }
 
+// Register registers the given handler to the underlying serve mux
 func (router *notificationRouter) Register(pattern string, handler http.Handler) {
 	router.mux.Handle(pattern, handler)
 }
 
+// ServeMux is used to return the underlying serve mux
 func (router *notificationRouter) ServeMux() *http.ServeMux {
 	return router.mux
 }

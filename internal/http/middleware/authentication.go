@@ -17,6 +17,7 @@ func NewAuthenticatorMiddleware(logger *zap.SugaredLogger) *authenticatorMiddlew
 	}
 }
 
+// Auth implements the middleware logic to authenticate an incoming request
 func (auth *authenticatorMiddleware) Auth(handler http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		requestID := r.Context().Value(model.RequestID).(string)

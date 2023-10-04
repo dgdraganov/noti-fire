@@ -8,6 +8,7 @@ import (
 	"github.com/dgdraganov/noti-fire/internal/model"
 )
 
+// WriteResponse is used by http handlers in order to write the specific message and status code to the response writer object
 func WriteResponse(w http.ResponseWriter, message string, statusCode int) error {
 	respMsg := model.ResponseMessage{Message: message}
 	resp, err := json.Marshal(respMsg)

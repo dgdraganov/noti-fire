@@ -15,7 +15,8 @@ import (
 	"github.com/dgdraganov/noti-fire/pkg/config"
 	"github.com/dgdraganov/noti-fire/pkg/kafka"
 	"github.com/dgdraganov/noti-fire/pkg/log"
-	"github.com/dgdraganov/noti-fire/pkg/producer"
+	"github.com/dgdraganov/noti-fire/pkg/produce"
+
 	"go.uber.org/zap/zapcore"
 )
 
@@ -34,7 +35,7 @@ func main() {
 	l := middleware.NewLoggerMiddleware(logger)
 
 	kafkaWriter := kafka.NewKafkaWriter(conf.KafkaProducerConfig)
-	kafkaProducer := producer.NewMessageProducer(kafkaWriter)
+	kafkaProducer := produce.NewMessageProducer(kafkaWriter)
 	processor := process.NewProcessAction(kafkaProducer)
 
 	var processHandler http.Handler

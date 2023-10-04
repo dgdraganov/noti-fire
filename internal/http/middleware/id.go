@@ -19,6 +19,7 @@ func NewRequestIdMiddleware(logger *zap.SugaredLogger) *requestIdMiddleware {
 	}
 }
 
+// Id implements the middleware logic to attach an unique request id (uuid) to the request context
 func (r *requestIdMiddleware) Id(handler http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		requestID := uuid.New()

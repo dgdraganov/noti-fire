@@ -34,22 +34,36 @@ func (n *notificationHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) 
 			"expected_request_method", n.method,
 			"request_id", requestID,
 		)
-		common.WriteResponse(
+		err := common.WriteResponse(
 			w,
 			fmt.Sprintf("invalid request method %s, expected method is %s", r.Method, n.method),
 			http.StatusBadRequest,
 		)
+		if err != nil {
+			n.logs.Errorw(
+				"write response",
+				"request_id", requestID,
+				"error", err,
+			)
+		}
 		return
 	}
-	// decode json request body
 	notification := model.NotificationRequest{}
+	// decode json request body
 	err := common.JSONDecode(r.Body, &notification)
 	if err != nil {
-		common.WriteResponse(
+		err := common.WriteResponse(
 			w,
 			"invalid JSON request body",
 			http.StatusBadRequest,
 		)
+		if err != nil {
+			n.logs.Errorw(
+				"write response",
+				"request_id", requestID,
+				"error", err,
+			)
+		}
 		return
 	}
 
@@ -61,17 +75,31 @@ func (n *notificationHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) 
 			"request_id", requestID,
 			"error", err.Error(),
 		)
-		common.WriteResponse(
+		err := common.WriteResponse(
 			w,
 			"Something went wrong on our end!",
 			http.StatusInternalServerError)
+		if err != nil {
+			n.logs.Errorw(
+				"write response",
+				"request_id", requestID,
+				"error", err,
+			)
+		}
 		return
 	}
 
 	// OK
-	common.WriteResponse(
+	err = common.WriteResponse(
 		w,
 		"notification request submitted successfully",
 		http.StatusOK,
 	)
+	if err != nil {
+		n.logs.Errorw(
+			"write response",
+			"request_id", requestID,
+			"error", err,
+		)
+	}
 }

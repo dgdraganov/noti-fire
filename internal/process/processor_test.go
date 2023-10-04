@@ -30,7 +30,7 @@ func Test_ProcessAction_Execute_Success(t *testing.T) {
 	errExpected := error(nil)
 
 	if errExpected != errGot {
-		t.Fatalf("error does not match, expected: %s, got: %s", errExpected, errGot)
+		t.Fatalf("error does not match, expected: %v, got: %v", errExpected, errGot)
 	}
 
 }
@@ -47,6 +47,6 @@ func Test_ProcessAction_Execute_Error(t *testing.T) {
 	errGot := action.Execute(context.Background(), "test message")
 
 	if !errors.Is(errGot, errTest) {
-		t.Fatalf("error does not match, expected error %q, to be %q", errGot, errTest)
+		t.Fatalf("error does not match, expected error '%v', to be '%v'", errGot, errTest)
 	}
 }

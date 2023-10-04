@@ -9,6 +9,7 @@ func NewSlackDriver() *SlackDriver {
 	return &SlackDriver{}
 }
 
+// Send implements the dispatch.Driver interface
 func (s *SlackDriver) Send(msg model.NotificationMessage) error {
 	return nil
 }

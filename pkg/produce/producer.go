@@ -1,4 +1,4 @@
-package producer
+package produce
 
 import (
 	"context"
@@ -19,13 +19,12 @@ func NewMessageProducer(writer MessageWriter) *messageProducer {
 	}
 }
 
+// Publish uses the message writer in order to publish a message
 func (pr *messageProducer) Publish(ctx context.Context, msg model.EventMessage) error {
 	bytes, err := json.Marshal(msg)
 	if err != nil {
 		return fmt.Errorf("json marshal: %w", err)
 	}
-
-	// kafkaMessage := kafka.Message{Value: bytes}
 
 	if err := pr.writer.WriteMessage(ctx, bytes); err != nil {
 		return fmt.Errorf("write message: %w", err)

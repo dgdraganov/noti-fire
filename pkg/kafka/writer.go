@@ -16,7 +16,7 @@ type kafkaWriter struct {
 // NewKafkaWriter is sa constructor function for the kafkaWriter type
 func NewKafkaWriter(config config.KafkaProducerConfig) *kafkaWriter {
 
-	// todo: add tls config
+	// todo: add tls config and certificates
 	// dialer := &kafka.Dialer{
 	//     Timeout:   10 * time.Second,
 	//     DualStack: true,
